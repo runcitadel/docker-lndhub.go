@@ -1,15 +1,19 @@
+ARG VERSION=0.9.0
+
 FROM ghcr.io/runcitadel/go:main as builder
+
+ARG VERSION
+
+RUN apk add git
 
 # Move to working directory /build
 WORKDIR /build
 
-# Copy and download dependency using go mod
-COPY go.mod .
-COPY go.sum .
-RUN go mod download
+# Download lndhub.go
+RUN git clone https://github.com/getAlby/lndhub.go .
 
-# Copy the code into the container
-COPY . .
+# Copy and download dependency using go mod
+RUN go mod download
 
 # Build the application
 RUN go build -o main
