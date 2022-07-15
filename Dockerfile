@@ -1,3 +1,23 @@
-FROM node:16-bullseye-slim
+FROM ghcr.io/runcitadel/go:main as builder
 
-RUN echo "In a repository, actually do something useful here, this is just to allow builds." && touch examplefile
+# Move to working directory /build
+WORKDIR /build
+
+# Copy and download dependency using go mod
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+
+# Copy the code into the container
+COPY . .
+
+# Build the application
+RUN go build -o main
+
+# Start a new, final image to reduce size.
+FROM alpine:edge as final
+
+# Copy the binaries and entrypoint from the builder image.
+COPY --from=builder /build/main /bin/lndhub
+
+ENTRYPOINT [ "/bin/lndhub" ]
