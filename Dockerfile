@@ -4,7 +4,7 @@ FROM ghcr.io/runcitadel/go:main as builder
 
 ARG VERSION
 
-RUN apk add git gcc
+RUN apk add git gcc musl-dev
 
 # Move to working directory /build
 WORKDIR /build
