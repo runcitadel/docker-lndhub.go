@@ -21,6 +21,9 @@ RUN go build -o main
 # Start a new, final image to reduce size.
 FROM alpine:edge as final
 
+# xxd is a runtime dependency on Citadel
+RUN apk add xxd
+
 # Copy the binaries and entrypoint from the builder image.
 COPY --from=builder /build/main /bin/lndhub
 
